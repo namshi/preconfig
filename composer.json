@@ -1,0 +1,27 @@
+{
+    "name": "namshi/preconfig",
+    "description": "This is a port of Namshi/reconfig from JS to PHP",
+    "require": {
+    },
+    "require-dev": {
+        "php": "~5.4",
+        "phpspec/phpspec": "2.0.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Geshan Manandhar",
+            "email": "geshan.manandhar@namshi.com"
+        },
+        {
+            "name": "Ayham Alzoubi",
+            "email": "ayham.a.alzoubi@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Namshi\\PreConfig": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
