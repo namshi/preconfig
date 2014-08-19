@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class PreConfig
 {
+    const KEY_SEPARATOR = '.';
+
     protected $configs = [];
 
     public function __construct(array $configs = [])
@@ -19,20 +21,28 @@ class PreConfig
             return $this->configs;
         }
 
-        $value = $this->getValueByPath($key, $fallbackValue);
+        $value = $this->getValueByKey($this->configs, $key, $fallbackValue);
 
         return $value;
     }
 
-    protected function getValueByPath($path, $fallbackValue)
+    protected function getValueByKey(array $configs, $key, $fallbackValue = null)
     {
-        if (!array_key_exists($path, $this->configs)) {
-            return $fallbackValue;
+        if (array_key_exists($key, $configs)) {
+            return $configs[$key];
         }
 
-        $value = $this->configs[$path];
+        if (strpos($key, self::KEY_SEPARATOR)) {
+            $splitKey = explode(self::KEY_SEPARATOR, $key);
 
-        return empty($value) ? $fallbackValue : $value;
+            if (count($splitKey) > 1) {
 
+                $nextKey = str_replace($splitKey[0] . '.', '', $key);
+
+                return $this->getValueByKey($configs[$splitKey[0]], $nextKey);
+            }
+        }
+
+        return $fallbackValue;
     }
 }
