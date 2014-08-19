@@ -26,10 +26,38 @@ class PreConfig
         return $value;
     }
 
+    protected function resolveReferences($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        preg_match('/{{\s*[\w\.]+\s*}}/', $value, $references);
+
+        if (!$references) {
+            return $value;
+        }
+
+        if (count($references) === 1) {
+            $reference = preg_replace('/{{(.*)}}/i', '$1', $references[0]);
+
+            if (!is_string($reference)) {
+                return $this->get(trim($reference));
+            }
+        }
+
+        return preg_replace("/{{\s*{{(.*)}}+\s*}}/i", '$1', $this->get(trim(preg_replace('/{{(.*)}}/i', '$1', $value))));
+    }
+
+    protected function resolveParameters($value, $params)
+    {
+
+    }
+
     protected function getValueByKey(array $configs, $key, $fallbackValue = null)
     {
         if (array_key_exists($key, $configs)) {
-            return $configs[$key];
+
+            return $this->resolveReferences($configs[$key]);
         }
 
         if (strpos($key, self::KEY_SEPARATOR)) {
@@ -37,7 +65,7 @@ class PreConfig
 
             if (count($splitKey) > 1) {
 
-                $nextKey = str_replace($splitKey[0] . '.', '', $key);
+                $nextKey = str_replace($splitKey[0] . self::KEY_SEPARATOR, '', $key);
 
                 return $this->getValueByKey($configs[$splitKey[0]], $nextKey);
             }

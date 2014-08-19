@@ -80,4 +80,37 @@ class PreConfigSpec extends ObjectBehavior
         $this->get('key1.key2')->shouldEqual('value2');
     }
 
+    function it_should_get_by_key_for_one_level_preferences()
+    {
+        $argument = [
+            'key1' => [
+                'key2' => '{{key1.key3}}',
+                'key3' => 'yes'
+            ]
+        ];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+
+        $this->get('key1.key2')->shouldEqual('yes');
+    }
+
+    function it_should_get_by_key_for_multi_level_preferences()
+    {
+        $argument = [
+            'key1' => [
+                'key2' => '{{ key1.key3 }}',
+                'key3' => [
+                    'key4' => 'value4',
+                    'key5' => 'value5'
+                ]
+            ]
+        ];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+
+        $this->get('key1.key2')->shouldEqual([
+            'key4' => 'value4',
+            'key5' => 'value5'
+        ]);
+    }
 }
