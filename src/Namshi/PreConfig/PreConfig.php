@@ -15,13 +15,21 @@ class PreConfig
         $this->configs = $configs;
     }
 
-    public function get($key = '', $fallbackValue = null)
+    public function get($key = '', $params = [], $fallbackValue = null)
     {
         if (!$key) {
             return $this->configs;
         }
 
-        $value = $this->getValueByKey($this->configs, $key, $fallbackValue);
+        $value = $this->getValueByKey($this->configs, $key, $params, $fallbackValue);
+
+        if (is_string($value)) {
+            $value = $this->resolveReferences($value);
+
+            if ($params) {
+                $value = $this->resolveParameters($value, $params);
+            }
+        }
 
         return $value;
     }
@@ -31,6 +39,7 @@ class PreConfig
         if (!is_string($value)) {
             return $value;
         }
+
         preg_match('/{{\s*[\w\.]+\s*}}/', $value, $references);
 
         if (!$references) {
@@ -50,10 +59,14 @@ class PreConfig
 
     protected function resolveParameters($value, $params)
     {
+        foreach ($params as $key => $param) {
+            $value = str_replace(':' . $key, $param, $value);
+        }
 
+        return $value;
     }
 
-    protected function getValueByKey(array $configs, $key, $fallbackValue = null)
+    protected function getValueByKey(array $configs, $key, $params, $fallbackValue = null)
     {
         if (array_key_exists($key, $configs)) {
 
@@ -67,7 +80,7 @@ class PreConfig
 
                 $nextKey = str_replace($splitKey[0] . self::KEY_SEPARATOR, '', $key);
 
-                return $this->getValueByKey($configs[$splitKey[0]], $nextKey);
+                return $this->getValueByKey($configs[$splitKey[0]], $nextKey, $params);
             }
         }
 

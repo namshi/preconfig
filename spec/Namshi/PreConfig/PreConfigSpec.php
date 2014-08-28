@@ -52,7 +52,7 @@ class PreConfigSpec extends ObjectBehavior
         $argument = ['key1' => 'value1', 'key2' => 'value2'];
         $this->beConstructedWith($argument);
         $this->shouldHaveType('Namshi\PreConfig\PreConfig');
-        $this->get('nonExisting', 'fallback')->shouldEqual('fallback');
+        $this->get('nonExisting', [], 'fallback')->shouldEqual('fallback');
     }
 
     function it_should_get_by_existing_key_for_first_level_with_fallback()
@@ -60,7 +60,7 @@ class PreConfigSpec extends ObjectBehavior
         $argument = ['key1' => 'value1', 'key2' => 'value2'];
         $this->beConstructedWith($argument);
         $this->shouldHaveType('Namshi\PreConfig\PreConfig');
-        $this->get('key1', 'fallback')->shouldEqual('value1');
+        $this->get('key1', [], 'fallback')->shouldEqual('value1');
     }
 
     function it_should_get_by_key_for_first_level_without_fallback_for_non_existing_value()
@@ -112,5 +112,45 @@ class PreConfigSpec extends ObjectBehavior
             'key4' => 'value4',
             'key5' => 'value5'
         ]);
+    }
+
+    function it_should_get_by_key_for_first_level_with_params()
+    {
+        $argument = ['key1' => 'Hello :name', 'key2' => 'value2'];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('key1', ['name' => 'Ayham'])->shouldEqual('Hello Ayham');
+    }
+
+    function it_should_get_by_key_for_first_level_containing_params_without_passing_params()
+    {
+        $argument = ['key1' => 'Hello :name', 'key2' => 'value2'];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('key1')->shouldEqual('Hello :name');
+    }
+
+    function it_should_get_by_key_for_multi_levels_with_params()
+    {
+        $argument = ['key1' => ['key2' => 'Hello :name']];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('key1.key2', ['name' => 'Ayham'])->shouldEqual('Hello Ayham');
+    }
+
+    function it_should_get_by_key_for_multi_levels_with_multi_params()
+    {
+        $argument = ['key1' => ['key2' => 'Hello :name, good :time']];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('key1.key2', ['name' => 'Ayham', 'time' => 'morning'])->shouldEqual('Hello Ayham, good morning');
+    }
+
+    function it_should_get_by_key_for_multi_levels_with_multi_params_in_different_levels_shouldnt_be_parsed()
+    {
+        $argument = ['key1' => ['key2' => 'Hello :name, good :time']];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('key1', ['name' => 'Ayham', 'time' => 'morning'])->shouldEqual($argument['key1']);
     }
 }
