@@ -16,8 +16,12 @@ add usage instructions.
 
 ## Tests
 
+We used [phpspec](http://www.phpspec.net) to write tests. They are more like specs than just tests,
+to run tests execute the following commands:
 
-```
+
+```shell
+
  ᐅ composer install --prefer-dist
  ᐅ php vendor/bin/phpspec run
 
