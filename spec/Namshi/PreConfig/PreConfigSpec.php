@@ -138,7 +138,7 @@ class PreConfigSpec extends ObjectBehavior
         $this->get('key1.key2', ['name' => 'Ayham'])->shouldEqual('Hello Ayham');
     }
 
-    function it_should_get_by_key_for_multi_levels_with_multi_params()
+    function it_should_get_by_key_for_multi_levels_with_multiple_params()
     {
         $argument = ['key1' => ['key2' => 'Hello :name, good :time']];
         $this->beConstructedWith($argument);
@@ -152,5 +152,18 @@ class PreConfigSpec extends ObjectBehavior
         $this->beConstructedWith($argument);
         $this->shouldHaveType('Namshi\PreConfig\PreConfig');
         $this->get('key1', ['name' => 'Ayham', 'time' => 'morning'])->shouldEqual($argument['key1']);
+    }
+
+    function it_should_throw_exception_in_case_of_circular_reference()
+    {
+        $argument = [
+            'key1' => [
+                'key2' => '{{ key1.key3 }}',
+                'key3' => '{{ key1.key2 }}'
+            ]
+        ];
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->shouldThrow('\Namshi\PreConfig\Exception\CircularReferenceException')->duringGet('key1.key2');
     }
 }

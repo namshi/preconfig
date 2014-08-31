@@ -2,22 +2,45 @@
 
 namespace Namshi\PreConfig;
 
-use Symfony\Component\Yaml\Yaml;
+use Namshi\PreConfig\Exception\CircularReferenceException;
 
+/**
+ * Class PreConfig
+ *
+ * @package Namshi\PreConfig
+ */
 class PreConfig
 {
-    const KEY_SEPARATOR = '.';
+    const KEY_SEPARATOR     = '.';
+    const MAX_ALLOWED_DEPTH = 100;
 
     /**
      * @var array
      */
     protected $configs = [];
 
+    protected $depth;
+
+    /**
+     * Constructor
+     *
+     * @param array $configs
+     */
     public function __construct(array $configs = [])
     {
-        $this->configs = $configs;
+        $this->configs  = $configs;
+        $this->depth    = 0;
     }
 
+    /**
+     * Returns a configuration value, by key.
+     *
+     * @param string        $key
+     * @param array         $params
+     * @param null|mixed    $fallbackValue
+     *
+     * @return array|mixed|null
+     */
     public function get($key = '', $params = [], $fallbackValue = null)
     {
         if (!$key) {
@@ -71,6 +94,10 @@ class PreConfig
 
     protected function getValueByKey(array $configs, $key, $params, $fallbackValue = null)
     {
+        if (++$this->depth > self::MAX_ALLOWED_DEPTH) {
+            throw new CircularReferenceException();
+        }
+
         if (array_key_exists($key, $configs)) {
 
             return $this->resolveReferences($configs[$key]);
