@@ -2,6 +2,9 @@
 
 [![Build Status](https://api.travis-ci.com/namshi/preconfig.svg?token=gpDfsZ6pMs8Vhxeyuq1K&branch=master)](https://magnum.travis-ci.com/namshi/preconfig)
 
+In PHP handling configs even as array is not easy, when you need to reference related configs or replace strings in configs it is not straightforward.
+This library will help you define configurations in clean, decoupled and smart way resulting in easy retrieval of configuration values. How? read on.
+
 This library is a PHP port of [Namshi/Reconfig](https://github.com/namshi/reconfig) javascript library.
 
 ## Installation
