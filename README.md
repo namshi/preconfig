@@ -12,7 +12,32 @@ Pick major and minor version according to your needs.
 
 ## Usage
 
-add usage instructions.
+Below are some usage examples.
+
+
+### Access a multi-dimensional array
+
+```php
+namespace Your\Namespace
+
+use Namshi\PreConfig\PreConfig;
+
+
+ $argument = [
+            'key1' => [
+                'key2' => '{{ key1.key3 }}',
+                'key3' => [
+                    'key4' => 'value4',
+                    'key5' => 'value5'
+                ]
+            ]
+        ];
+
+$preConfig = new Preconfig($argument);
+
+$key3 = $preConfig->get('key1.key3');
+
+```
 
 ## Tests
 
