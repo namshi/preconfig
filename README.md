@@ -1,5 +1,7 @@
 # NAMSHI | PreConfig
 
+[![Build Status](https://api.travis-ci.com/namshi/preconfig.svg?token=gpDfsZ6pMs8Vhxeyuq1K&branch=master)](https://magnum.travis-ci.com/namshi/preconfig)
+
 This library is a PHP port of [Namshi/Reconfig](https://github.com/namshi/reconfig) javascript library.
 
 ## Installation
