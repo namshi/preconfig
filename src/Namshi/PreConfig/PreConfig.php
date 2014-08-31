@@ -8,6 +8,9 @@ class PreConfig
 {
     const KEY_SEPARATOR = '.';
 
+    /**
+     * @var array
+     */
     protected $configs = [];
 
     public function __construct(array $configs = [])
