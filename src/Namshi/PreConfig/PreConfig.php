@@ -99,7 +99,6 @@ class PreConfig
         }
 
         if (array_key_exists($key, $configs)) {
-
             return $this->resolveReferences($configs[$key]);
         }
 
@@ -107,7 +106,6 @@ class PreConfig
             $splitKey = explode(self::KEY_SEPARATOR, $key);
 
             if (count($splitKey) > 1) {
-
                 $nextKey = str_replace($splitKey[0] . self::KEY_SEPARATOR, '', $key);
 
                 return $this->getValueByKey($configs[$splitKey[0]], $nextKey, $params);
