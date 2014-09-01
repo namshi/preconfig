@@ -15,7 +15,7 @@ Pick major and minor version according to your needs.
 
 ## Usage
 
-Below are some usage examples.
+You can see some [examples](src/Namshi/PreConfig/Example/example.php).
 
 
 ### Access a multi-dimensional array
