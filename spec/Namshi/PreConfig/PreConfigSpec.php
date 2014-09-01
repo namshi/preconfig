@@ -166,4 +166,63 @@ class PreConfigSpec extends ObjectBehavior
         $this->shouldHaveType('Namshi\PreConfig\PreConfig');
         $this->shouldThrow('\Namshi\PreConfig\Exception\CircularReferenceException')->duringGet('key1.key2');
     }
+
+    function it_should_get_by_key_for_multi_level_preferences_example()
+    {
+        $argument = [
+            'credentials' => [
+                'admin' => [
+                    'read'  => true,
+                    'write' => true
+                ],
+                'reader' => [
+                    'read' => true,
+                    'write' => false
+                ]
+            ],
+            'users' => [
+                'someImportantDude' => [
+                    'username'      => 'him',
+                    'password'      => '...',
+                    'credentials'   => '{{ credentials.admin }}'
+                ]
+            ]
+        ];
+
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+        $this->get('users.someImportantDude.credentials')->shouldEqual([
+            'read'  => true,
+            'write' =>  true
+        ]);
+    }
+
+    function it_should_throw_exception_in_case_of_adding_reference_in_string_value_with_not_string_value()
+    {
+        $argument = [
+            'credentials' => [
+                'admin' => [
+                    'read'  => true,
+                    'write' => true
+                ],
+                'reader' => [
+                    'read' => true,
+                    'write' => false
+                ]
+            ],
+            'users' => [
+                'someImportantDude' => [
+                    'username'      => 'him',
+                    'password'      => '...',
+                    'credentials'   => '{{ credentials.admin }} {{ credentials.admin }} '
+                ]
+            ]
+        ];
+
+        $this->beConstructedWith($argument);
+        $this->shouldHaveType('Namshi\PreConfig\PreConfig');
+
+        $this->shouldThrow('\Namshi\PreConfig\Exception\NonScalarReferenceException')
+             ->duringGet('users.someImportantDude.credentials');
+    }
 }

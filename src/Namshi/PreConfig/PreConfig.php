@@ -3,6 +3,7 @@
 namespace Namshi\PreConfig;
 
 use Namshi\PreConfig\Exception\CircularReferenceException;
+use Namshi\PreConfig\Exception\NonScalarReferenceException;
 
 /**
  * Class PreConfig
@@ -12,7 +13,7 @@ use Namshi\PreConfig\Exception\CircularReferenceException;
 class PreConfig
 {
     const KEY_SEPARATOR     = '.';
-    const MAX_ALLOWED_DEPTH = 100;
+    const MAX_ALLOWED_DEPTH = 10;
 
     /**
      * @var array
@@ -43,21 +44,9 @@ class PreConfig
      */
     public function get($key = '', $params = [], $fallbackValue = null)
     {
-        if (!$key) {
-            return $this->configs;
-        }
+        $this->depth = 0;
 
-        $value = $this->getValueByKey($this->configs, $key, $params, $fallbackValue);
-
-        if (is_string($value)) {
-            $value = $this->resolveReferences($value);
-
-            if ($params) {
-                $value = $this->resolveParameters($value, $params);
-            }
-        }
-
-        return $value;
+        return $this->_get($key, $params, $fallbackValue);
     }
 
     protected function resolveReferences($value)
@@ -66,21 +55,25 @@ class PreConfig
             return $value;
         }
 
-        preg_match('/{{\s*[\w\.]+\s*}}/', $value, $references);
+        preg_match_all('/{{\s*([\w\.]+)\s*}}/', $value, $references, PREG_SET_ORDER);
 
-        if (!$references) {
+        if ( ! $references) {
             return $value;
+        } elseif (count($references) === 1) {
+            return $this->_get(trim($references[0][1]));
         }
 
-        if (count($references) === 1) {
-            $reference = preg_replace('/{{(.*)}}/i', '$1', $references[0]);
+        $placeholderToValue = [];
 
-            if (!is_string($reference)) {
-                return $this->get(trim($reference));
+        foreach ($references as $reference) {
+            $placeholderToValue[$reference[0]] = $refVal = $this->_get(trim($reference[1]));
+
+            if (is_array($refVal)) {
+                throw new NonScalarReferenceException();
             }
         }
 
-        return preg_replace("/{{\s*{{(.*)}}+\s*}}/i", '$1', $this->get(trim(preg_replace('/{{(.*)}}/i', '$1', $value))));
+        return strtr($value, $placeholderToValue);
     }
 
     protected function resolveParameters($value, $params)
@@ -103,15 +96,32 @@ class PreConfig
         }
 
         if (strpos($key, self::KEY_SEPARATOR)) {
-            $splitKey = explode(self::KEY_SEPARATOR, $key);
+            $splitKey = explode(self::KEY_SEPARATOR, $key, 2);
 
             if (count($splitKey) > 1) {
-                $nextKey = str_replace($splitKey[0] . self::KEY_SEPARATOR, '', $key);
-
-                return $this->getValueByKey($configs[$splitKey[0]], $nextKey, $params);
+                return $this->getValueByKey($configs[$splitKey[0]], $splitKey[1], $params);
             }
         }
 
         return $fallbackValue;
+    }
+
+    protected function _get($key = '', $params = [], $fallbackValue = null)
+    {
+        if (!$key) {
+            return $this->configs;
+        }
+
+        $value = $this->getValueByKey($this->configs, $key, $params, $fallbackValue);
+
+        if (is_string($value)) {
+            $value = $this->resolveReferences($value);
+
+            if ($params) {
+                $value = $this->resolveParameters($value, $params);
+            }
+        }
+
+        return $value;
     }
 }
