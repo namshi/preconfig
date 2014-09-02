@@ -61,7 +61,7 @@ to run tests locally, execute the following commands:
 
 ```shell
 
- ᐅ composer install --prefer-dist
+ ᐅ composer install --dev --prefer-source
  ᐅ php vendor/bin/phpspec run
 
 ```
