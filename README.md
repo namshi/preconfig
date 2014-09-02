@@ -31,7 +31,7 @@ namespace Your\Namespace
 
 use Namshi\PreConfig\PreConfig;
 
-public function yourFunction()
+public function foo()
 {
     $argument = [
                 'key1' => [
