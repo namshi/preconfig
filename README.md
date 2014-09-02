@@ -22,7 +22,7 @@ You can install the library directly with composer:
 ```
 ## Usage
 
-A simple example is given below;
+A simple example is given below:
 
 ### Access a multi-dimensional array
 
