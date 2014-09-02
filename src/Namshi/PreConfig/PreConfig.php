@@ -20,6 +20,9 @@ class PreConfig
      */
     protected $configs = [];
 
+    /**
+     * @var int
+     */
     protected $depth;
 
     /**
