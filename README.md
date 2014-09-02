@@ -9,14 +9,14 @@ This library is a PHP port of [Namshi/Reconfig](https://github.com/namshi/reconf
 
 ## Installation
 
-Submit to packagist
+You can install the library directly with composer:
 
-Pick major and minor version according to your needs.
-
+```
+"namshi/preconfig": "0.1.0"
+```
 ## Usage
 
-You can see some [examples](src/Namshi/PreConfig/Example/example.php).
-
+A simple example is given below;
 
 ### Access a multi-dimensional array
 
@@ -44,10 +44,13 @@ public function yourFunction()
 
 ```
 
+You can see more examples in the [example](src/Namshi/PreConfig/Example/example.php) file.
+
+
 ## Tests
 
 We used [phpspec](http://www.phpspec.net) to write tests. They are more like specs than just tests,
-to run tests execute the following commands:
+to run tests locally, execute the following commands:
 
 
 ```shell
@@ -56,3 +59,7 @@ to run tests execute the following commands:
  ᐅ php vendor/bin/phpspec run
 
 ```
+
+## Feedback
+
+Add an issue, open a PR, drop us an email! We would love to hear from you!
