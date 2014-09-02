@@ -52,11 +52,10 @@ public function yourFunction()
 
 You can see more examples in the [example](src/Namshi/PreConfig/Example/example.php) file.
 
-
 ## Tests
 
-We used [phpspec](http://www.phpspec.net) to write tests. They are more like specs than just tests,
-to run tests locally, execute the following commands:
+We used [phpspec](http://www.phpspec.net) to write tests. They are more like specs than just tests.
+You will need [composer](https://getcomposer.org) to get the dependencies, to run tests locally, execute the following commands:
 
 
 ```shell
