@@ -7,6 +7,12 @@ This library will help you define configurations in clean, decoupled and smart w
 
 This library is a PHP port of [Namshi/Reconfig](https://github.com/namshi/reconfig) javascript library.
 
+## Prerequisites
+
+This library needs PHP 5.4+.
+
+It has been tested using PHP5.4 to PHP5.6 and HHVM.
+
 ## Installation
 
 You can install the library directly with composer:
